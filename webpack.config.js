@@ -8,14 +8,6 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')
   },
-  module: {
-    rules: [
-      {
-        test: /\.txt$/,
-        use: ['raw-loader']
-      }
-    ]
-  },
   plugins: [
     new CopyWebpackPlugin([{
       from: 'src/timestamp.txt',
@@ -27,7 +19,8 @@ module.exports = {
       from: 'src/version.txt',
       transform: function (content) {
         const data = jsonfile.readFileSync('package.json')
-        return data.version
+        // BUILD_NUMBER is provided by TeamCity
+        return data.version + '.' + (process.env.BUILD_NUMBER || 0).toString()
       }
     }])
   ]
